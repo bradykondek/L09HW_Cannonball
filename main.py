@@ -1,6 +1,5 @@
 # Import libraries
 from math import sin, cos
-#matplotlib.use('Qt5Agg')  # Use the Qt5Agg backend for GUI support
 from matplotlib import pyplot as plt
 import random
 
@@ -79,9 +78,6 @@ class Crazyball(Cannonball):
     
     # Move function (modified for this class)
     def move(self, sec, grav=9.81):
-        
-        # Include sec/grav values from parent class Cannonball
-        #super().move(sec, grav)
         
         # Generate a random value
         self.rand_q = random.randrange(0, 10)
@@ -192,9 +188,6 @@ def main():
 
             # Break from while loop
             break
-
-        # Reset cannonball position
-        #c = Cannonball(0)
         
         # Shoot cannonball
         shoot(c, angle, v, userOption)
