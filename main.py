@@ -1,5 +1,5 @@
 # Import libraries
-from math import sin, cos
+from math import sin, cos, radians
 from matplotlib import pyplot as plt
 import random
 
@@ -17,13 +17,15 @@ class Print_Iface:
 #
 class Cannonball:
     
-    # Establish HAS-A relationship with Print_Iface class
+    # Establish HAS-A relationship with Print_Iface class (composition)
     print_iface_cls = Print_Iface
     
     ## Create a new cannonball at the provided x position.
     #  @param x the x position of the ball
     #
     def __init__(self, x):
+        
+        # Define instance variables
         self._x = x
         self._y = 0
         self._vx = 0
@@ -58,7 +60,7 @@ class Cannonball:
         # Return value of y instance variable
         return self._y
 
-    ## Shoot the canon ball.
+    ## Shoot the cannon ball.
     #  @param angle the angle of the cannon
     #  @param velocity the initial velocity of the ball
     #
@@ -67,6 +69,7 @@ class Cannonball:
         self._vy = velocity * sin(angle)
         self.move(0.1, user_grav)
 
+        # While current y value is greater than 1e-14
         while self.getY() > 1e-14:
 
             # Call plotCannonball function within Print_Iface class to plot on graph
@@ -74,10 +77,19 @@ class Cannonball:
             self.move(0.1, user_grav)
 
 # Crazyball class
-class Crazyball(Cannonball):
+class Crazyball(Cannonball):  # inherits from Cannonball
+    
+    # Constructor
+    def __init__(self, x):
+    
+        # Reference parent class's constructor
+        super().__init__(x)
     
     # Move function (modified for this class)
-    def move(self, sec, grav=9.81):
+    def move(self, sec, grav=9.81):  # gravity is set to 9.81 by default if no value is passed in for it, otherwise it is the value passed in for it
+        
+        # Reference parent class's move function
+        super().move(sec, grav)
         
         # Generate a random value
         self.rand_q = random.randrange(0, 10)
@@ -86,17 +98,18 @@ class Crazyball(Cannonball):
         if self.getX() < 400:
             
             # Update x instance variable with random number
-            self._x = self._x + self.rand_q
+            self._x += self.rand_q
 
         # If x coordinate is greater than/equal to 400
         if self.getX() >= 400:
             
             # Update x instance variable with random number
-            self._x = self._x - self.rand_q
+            self._x -= self.rand_q
 
 # Get option from user
 def getOption():
 
+    # Loop until user has selected a valid option, 1-4
     while True:
 
         # Declare list of possible options
@@ -134,7 +147,7 @@ def getOption():
 def getStartInfo():
 
     # Prompt user for starting angle
-    angle = float(input("Enter starting angle: "))
+    angle = radians(float(input("\nEnter starting angle: ")))  # convert input to radians
 
     # Prompt user for initial velocity
     v = float(input("Enter initial velocity: "))
@@ -149,7 +162,7 @@ def shoot(cannonball, angle, v, option):
     if(option == 1):  # if user selected option 1, earth gravity
         
         # Shoot cannonball using earth gravity
-        cannonball.shoot(angle, v, 9.81)
+        cannonball.shoot(angle, v, 9.81)  # gravity of 9.81
 
     elif(option == 2):  # if user selected option 2, moon gravity
         
@@ -158,7 +171,7 @@ def shoot(cannonball, angle, v, option):
 
     elif(option == 3):  # if user selected option 3, crazy trajectory
         
-        # Create Crazyball object
+        # Create Crazyball object, replacing cannonball variable
         cannonball = Crazyball(0)
         
         # Shoot cannonball using crazy trajectory
@@ -174,20 +187,20 @@ def main():
     # Loop program until user chooses to quit
     while True:
 
+        # Get option from user
+        userOption = getOption()
+
+        # If user chooses option to quit, break out of while loop, ending program
+        if(userOption == 4):
+
+            # Break from while loop
+            break
+        
         # Get angle and velocity information
         angle, v = getStartInfo()
 
         # Declare Cannonball object
         c = Cannonball(0)
-
-        # Get option from user
-        userOption = getOption()
-        
-        # If user chooses option to quit, break out of while loop
-        if(userOption == 4):
-
-            # Break from while loop
-            break
         
         # Shoot cannonball
         shoot(c, angle, v, userOption)
